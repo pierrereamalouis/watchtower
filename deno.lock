@@ -1,11 +1,23 @@
 {
   "version": "5",
   "specifiers": {
-    "jsr:@hono/hono@^4.9.11": "4.9.11"
+    "jsr:@hono/hono@^4.9.11": "4.9.11",
+    "npm:@types/node@*": "24.2.0"
   },
   "jsr": {
     "@hono/hono@4.9.11": {
       "integrity": "0ea26fad941c672f020194e8d332081b9164669189d27df5e111c5ae9a9d5823"
+    }
+  },
+  "npm": {
+    "@types/node@24.2.0": {
+      "integrity": "sha512-3xyG3pMCq3oYCNg7/ZP+E1ooTaGB4cG8JWRsqqOYQdbWNY4zbaV0Ennrd7stjiJEFZCaybcIgpTjJWHRfBSIDw==",
+      "dependencies": [
+        "undici-types"
+      ]
+    },
+    "undici-types@7.10.0": {
+      "integrity": "sha512-t5Fy/nfn+14LuOc2KNYg75vZqClpAiqscVvMygNnlsHBFpSXdJaYtXMcdNLpl/Qvc3P2cB3s6lOV51nqsFq4ag=="
     }
   },
   "workspace": {
