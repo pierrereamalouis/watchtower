@@ -1,5 +1,17 @@
 {
+  "tasks": {
+    "dev": "deno run --allow-net --allow-read --allow-env --watch main.ts",
+    "start": "deno run --allow-net --allow-read --allow-env main.ts",
+    "test": "deno test -A"
+  },
   "imports": {
-    "@hono/hono": "jsr:@hono/hono@^4.9.11"
+    "@hono/hono": "jsr:@hono/hono@^4.9.11",
+    "@std": "jsr:@std",
+    "zod": "npm:zod",
+    "@hono/zod-validator": "jsr:@hono/zod-validator@^0.7.4",
+    "bcrypt": "npm:bcrypt",
+    "dotenv": "npm:dotenv",
+    "drizzle-orm/postgres-js": "npm:drizzle-orm/postgres-js",
+    "postgres": "npm:postgres"
   }
 }
