@@ -1,12 +1,27 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@hono/hono@^4.8.3": "4.9.11",
     "jsr:@hono/hono@^4.9.11": "4.9.11",
-    "npm:@types/node@*": "24.2.0"
+    "jsr:@hono/zod-validator@~0.7.4": "0.7.4",
+    "npm:@types/node@*": "24.2.0",
+    "npm:bcrypt@*": "6.0.0",
+    "npm:dotenv@*": "17.2.3",
+    "npm:drizzle-orm@*": "0.44.6_postgres@3.4.7",
+    "npm:postgres@*": "3.4.7",
+    "npm:zod@*": "4.1.12",
+    "npm:zod@^4.0.5": "4.1.12"
   },
   "jsr": {
     "@hono/hono@4.9.11": {
       "integrity": "0ea26fad941c672f020194e8d332081b9164669189d27df5e111c5ae9a9d5823"
+    },
+    "@hono/zod-validator@0.7.4": {
+      "integrity": "aa09fe265989840d4ab88d6c393a5e2141920a536b8b75c39c6f36ddb344fed1",
+      "dependencies": [
+        "jsr:@hono/hono@^4.8.3",
+        "npm:zod@^4.0.5"
+      ]
     }
   },
   "npm": {
@@ -16,13 +31,52 @@
         "undici-types"
       ]
     },
+    "bcrypt@6.0.0": {
+      "integrity": "sha512-cU8v/EGSrnH+HnxV2z0J7/blxH8gq7Xh2JFT6Aroax7UohdmiJJlxApMxtKfuI7z68NvvVcmR78k2LbT6efhRg==",
+      "dependencies": [
+        "node-addon-api",
+        "node-gyp-build"
+      ],
+      "scripts": true
+    },
+    "dotenv@17.2.3": {
+      "integrity": "sha512-JVUnt+DUIzu87TABbhPmNfVdBDt18BLOWjMUFJMSi/Qqg7NTYtabbvSNJGOJ7afbRuv9D/lngizHtP7QyLQ+9w=="
+    },
+    "drizzle-orm@0.44.6_postgres@3.4.7": {
+      "integrity": "sha512-uy6uarrrEOc9K1u5/uhBFJbdF5VJ5xQ/Yzbecw3eAYOunv5FDeYkR2m8iitocdHBOHbvorviKOW5GVw0U1j4LQ==",
+      "dependencies": [
+        "postgres"
+      ],
+      "optionalPeers": [
+        "postgres"
+      ]
+    },
+    "node-addon-api@8.5.0": {
+      "integrity": "sha512-/bRZty2mXUIFY/xU5HLvveNHlswNJej+RnxBjOMkidWfwZzgTbPG1E3K5TOxRLOR+5hX7bSofy8yf1hZevMS8A=="
+    },
+    "node-gyp-build@4.8.4": {
+      "integrity": "sha512-LA4ZjwlnUblHVgq0oBF3Jl/6h/Nvs5fzBLwdEF4nuxnFdsfajde4WfxtJr3CaiH+F6ewcIB/q4jQ4UzPyid+CQ==",
+      "bin": true
+    },
+    "postgres@3.4.7": {
+      "integrity": "sha512-Jtc2612XINuBjIl/QTWsV5UvE8UHuNblcO3vVADSrKsrc6RqGX6lOW1cEo3CM2v0XG4Nat8nI+YM7/f26VxXLw=="
+    },
     "undici-types@7.10.0": {
       "integrity": "sha512-t5Fy/nfn+14LuOc2KNYg75vZqClpAiqscVvMygNnlsHBFpSXdJaYtXMcdNLpl/Qvc3P2cB3s6lOV51nqsFq4ag=="
+    },
+    "zod@4.1.12": {
+      "integrity": "sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ=="
     }
   },
   "workspace": {
     "dependencies": [
-      "jsr:@hono/hono@^4.9.11"
+      "jsr:@hono/hono@^4.9.11",
+      "jsr:@hono/zod-validator@~0.7.4",
+      "npm:bcrypt@*",
+      "npm:dotenv@*",
+      "npm:drizzle-orm@*",
+      "npm:postgres@*",
+      "npm:zod@*"
     ]
   }
 }
