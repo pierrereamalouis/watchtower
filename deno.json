@@ -1,23 +1,22 @@
 {
+  "importMap": "./import_map.json",
   "tasks": {
-    "dev": "deno run --allow-net --allow-read --allow-env --watch main.ts",
-    "start": "deno run --allow-net --allow-read --allow-env main.ts",
+    "dev": "deno run -A --env-file=.env --watch main.ts",
+    "start": "deno run -A --env-file=.env main.ts",
     "test": "deno test -A",
-    "drizzle:generate":"deno -A --node-modules-dir npm:drizzle-kit generate"
+    "drizzle:generate": "deno -A --node-modules-dir npm:drizzle-kit generate"
   },
   "imports": {
     "@hono/hono": "jsr:@hono/hono@^4.9.11",
-    "@std": "jsr:@std",
-    "drizzle-orm": "npm:drizzle-orm@^0.44.7",
-    "pg": "npm:pg@^8.16.3",
-    "zod": "npm:zod",
     "@hono/zod-validator": "jsr:@hono/zod-validator@^0.7.4",
-    "bcrypt": "npm:bcrypt",
-    "dotenv": "npm:dotenv",
+    "drizzle-orm": "npm:drizzle-orm@^0.44.7",
     "drizzle-kit": "npm:drizzle-kit@^0.31.5",
-    "drizzle-orm/postgres-js": "npm:drizzle-orm/postgres-js",
-    "drizzle-orm/pg-core": "npm:drizzle-orm/pg-core",
-    "postgres": "npm:postgres",
-    "@types/pg": "npm:@types/pg@^8.15.5"
+    "zod": "npm:zod",
+    "@std": "jsr:@std",
+    "pg": "npm:pg@^8.16.3",
+    "bcrypt": "npm:bcrypt",
+    "@types/pg": "npm:@types/pg@^8.15.5",
+    "dotenv": "npm:dotenv",
+    "postgres": "npm:postgres"
   }
 }

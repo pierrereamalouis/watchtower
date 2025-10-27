@@ -1,0 +1,16 @@
+{
+  "imports": {
+    "@/": "./src/",
+    "@app/": "./src/app/",
+    "@core/": "./src/core/",
+    "@features/": "./src/features/",
+    "@shared/": "./src/shared/",
+    "@db/": "./src/db/",
+    "@http/": "./src/http/",
+    "@infra/": "./src/infra/",
+    "@ui/": "./src/ui/",
+    "@lib/": "./src/lib/",
+    "@routes/": "./src/routes/",
+    "@config": "./src/config.ts"
+  }
+}
