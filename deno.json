@@ -7,6 +7,19 @@
     "drizzle:generate": "deno -A --node-modules-dir npm:drizzle-kit generate"
   },
   "imports": {
+    "@/": "./src/",
+    "@app/": "./src/app/",
+    "@core/": "./src/core/",
+    "@features/": "./src/features/",
+    "@shared/": "./src/shared/",
+    "@db/": "./src/db/",
+    "@http/": "./src/http/",
+    "@infra/": "./src/infra/",
+    "@ui/": "./src/ui/",
+    "@lib/": "./src/lib/",
+    "@routes/": "./src/routes/",
+    "@config": "./src/config/config.ts",
+
     "@hono/hono": "jsr:@hono/hono@^4.9.11",
     "@hono/zod-validator": "jsr:@hono/zod-validator@^0.7.4",
     "drizzle-orm": "npm:drizzle-orm@^0.44.7",
