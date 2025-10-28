@@ -1,5 +1,4 @@
 {
-  "importMap": "./import_map.json",
   "tasks": {
     "dev": "deno run -A --env-file=.env --watch main.ts",
     "start": "deno run -A --env-file=.env main.ts",
