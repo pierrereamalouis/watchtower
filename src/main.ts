@@ -1,9 +1,5 @@
-import { Hono } from "@hono/hono";
+import { makeApp } from "./app.ts";
 
-const app = new Hono();
-
-app.get("/", (c) => {
-	return c.text("Hello from the Trees!");
-});
-
-Deno.serve(app.fetch);
+const app = makeApp();
+Deno.serve({ port: 8000 }, app.fetch);
+console.log("🚀 Server running at http://localhost:8000");

@@ -4,12 +4,11 @@
     "jsr:@hono/hono@^4.8.3": "4.9.11",
     "jsr:@hono/hono@^4.9.11": "4.9.11",
     "jsr:@hono/zod-validator@~0.7.4": "0.7.4",
-    "npm:@types/node@*": "24.2.0",
     "npm:@types/pg@^8.15.5": "8.15.6",
     "npm:bcrypt@*": "6.0.0",
     "npm:dotenv@*": "17.2.3",
-    "npm:drizzle-kit@~0.31.5": "0.31.5_esbuild@0.25.11",
-    "npm:drizzle-orm@~0.44.7": "0.44.7_postgres@3.4.7_@types+pg@8.15.6_pg@8.16.3",
+    "npm:drizzle-kit@*": "0.31.6_esbuild@0.25.11",
+    "npm:drizzle-orm@*": "0.44.7_@types+pg@8.15.6_pg@8.16.3_postgres@3.4.7",
     "npm:pg@^8.16.3": "8.16.3",
     "npm:postgres@*": "3.4.7",
     "npm:zod@*": "4.1.12",
@@ -321,8 +320,8 @@
     "dotenv@17.2.3": {
       "integrity": "sha512-JVUnt+DUIzu87TABbhPmNfVdBDt18BLOWjMUFJMSi/Qqg7NTYtabbvSNJGOJ7afbRuv9D/lngizHtP7QyLQ+9w=="
     },
-    "drizzle-kit@0.31.5_esbuild@0.25.11": {
-      "integrity": "sha512-+CHgPFzuoTQTt7cOYCV6MOw2w8vqEn/ap1yv4bpZOWL03u7rlVRQhUY0WYT3rHsgVTXwYQDZaSUJSQrMBUKuWg==",
+    "drizzle-kit@0.31.6_esbuild@0.25.11": {
+      "integrity": "sha512-/B4e/4pwnx25QwD5xXgdpo1S+077a2VZdosXbItE/oNmUgQwZydGDz9qJYmnQl/b+5IX0rLfwRhrPnroGtrg8Q==",
       "dependencies": [
         "@drizzle-team/brocli",
         "@esbuild-kit/esm-loader",
@@ -331,16 +330,7 @@
       ],
       "bin": true
     },
-    "drizzle-orm@0.44.7_postgres@3.4.7": {
-      "integrity": "sha512-quIpnYznjU9lHshEOAYLoZ9s3jweleHlZIAWR/jX9gAWNg/JhQ1wj0KGRf7/Zm+obRrYd9GjPVJg790QY9N5AQ==",
-      "dependencies": [
-        "postgres"
-      ],
-      "optionalPeers": [
-        "postgres"
-      ]
-    },
-    "drizzle-orm@0.44.7_postgres@3.4.7_@types+pg@8.15.6_pg@8.16.3": {
+    "drizzle-orm@0.44.7_@types+pg@8.15.6_pg@8.16.3_postgres@3.4.7": {
       "integrity": "sha512-quIpnYznjU9lHshEOAYLoZ9s3jweleHlZIAWR/jX9gAWNg/JhQ1wj0KGRf7/Zm+obRrYd9GjPVJg790QY9N5AQ==",
       "dependencies": [
         "@types/pg",
@@ -536,8 +526,8 @@
       "npm:@types/pg@^8.15.5",
       "npm:bcrypt@*",
       "npm:dotenv@*",
-      "npm:drizzle-kit@~0.31.5",
-      "npm:drizzle-orm@~0.44.7",
+      "npm:drizzle-kit@*",
+      "npm:drizzle-orm@*",
       "npm:pg@^8.16.3",
       "npm:postgres@*",
       "npm:zod@*"
