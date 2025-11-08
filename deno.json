@@ -31,5 +31,8 @@
     "@types/pg": "npm:@types/pg@^8.15.5",
     "dotenv": "npm:dotenv",
     "postgres": "npm:postgres"
+  },
+  "fmt": {
+    "lineWidth": 120
   }
 }

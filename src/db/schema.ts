@@ -1,21 +1,66 @@
-import {
-  boolean,
-  date,
-  integer,
-  pgEnum,
-  pgTable,
-  serial,
-  smallint,
-  text,
-  timestamp,
-} from "drizzle-orm/pg-core";
+import { boolean, date, integer, pgEnum, pgTable, serial, smallint, text, timestamp } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm/relations";
 
 export const userRoleEnum = pgEnum("user_role", ["admin", "user"]);
+export const expeseStatus = pgEnum("expense_status", ["paid", "partial", "unpaid"]);
+export const accountVisibility = pgEnum("account_visibility", ["household", "personal"]);
+export const memberRole = pgEnum("member_role", ["owner", "admin", "member"]);
+export const payCadence = pgEnum("pay_cadence", ["weekly", "bi_weekly", "monthly", "yearly"]);
+export const expenseType = pgEnum("expense_type", ["anticipated", "occurred"]);
 
+// ========================================================
+// Core identity / multi-member support
+// ========================================================
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   email: text("email").notNull().unique(),
-  name: text("name").notNull(),
+  username: text("username").notNull(),
   passwordHash: text("password_hash").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
+
+export const households = pgTable("households", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const householdMembers = pgTable("household_members", {
+  id: serial("id").primaryKey(),
+  householdId: integer("household_id").notNull().references(() => households.id, { onDelete: "cascade" }),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  role: memberRole("role").notNull().default("member"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const householdsRelations = relations(households, ({ many }) => ({
+  members: many(householdMembers),
+}));
+
+export const usersRelations = relations(users, ({ many }) => ({
+  memberships: many(householdMembers),
+}));
+
+// ========================================================
+// Accounts / categories / labels (general finance layer)
+// ========================================================
+
+export const bankAccount = pgTable("bank_accounts", {
+  id: serial("id").primaryKey(),
+  householdId: integer("household_id").notNull().references(() => households.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  institution: text("institution"),
+  visibility: accountVisibility("visibility").notNull().default("personal"),
+  ownerUserId: integer("owner_user_id").references(() => users.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const categories = pgTable("categories", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  isShared: boolean("is_shared").notNull().default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+
