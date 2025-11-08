@@ -45,7 +45,7 @@ export const usersRelations = relations(users, ({ many }) => ({
 // Accounts / categories / labels (general finance layer)
 // ========================================================
 
-export const bankAccount = pgTable("bank_accounts", {
+export const bankAccounts = pgTable("bank_accounts", {
   id: serial("id").primaryKey(),
   householdId: integer("household_id").notNull().references(() => households.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
@@ -61,6 +61,48 @@ export const categories = pgTable("categories", {
   name: text("name").notNull(),
   isShared: boolean("is_shared").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (t) => ({
+  uniqPerUserId: { columns: [t.userId, t.name], unique: true },
+}));
+
+export const labels = pgTable("labels", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  color: text("color"),
+  transferTargetAccountId: integer("transfer_target_account_id").references(() => bankAccounts.id, {
+    onDelete: "set null",
+  }),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (t) => ({
+  uniqPerUserId: { columns: [t.userId, t.name], unique: true },
+}));
+
+// ========================================================
+// Transactions (general, not just budget view)
+// ========================================================
+export const transactions = pgTable("transactions", {
+  id: serial("id").primaryKey(),
+  accountId: integer("account_id").notNull().references(() => bankAccounts.id, { onDelete: "cascade" }),
+  categoryId: integer("category_id").references(() => categories.id, { onDelete: "set null" }),
+  householdId: integer("household_id").notNull().references(() => households.id, { onDelete: "cascade" }),
+  amountCents: integer("amount_cents").notNull(), // Positive for income, negative for expenses
+  status: expeseStatus("status").notNull().default("unpaid"),
+  type: expenseType("type").notNull().default("occurred"),
+  note: text("note"),
+  transactionDate: date("transaction_date").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }),
 });
 
+export const transactionLabels = pgTable("transaction_labels", {
+  transactionId: integer("transaction_id").notNull().references(() => transactions.id, { onDelete: "cascade" }),
+  labelId: integer("label_id").notNull().references(() => labels.id, { onDelete: "cascade" }),
+}, (t) => ({
+  pk: { columns: [t.transactionId, t.labelId], primaryKey: true },
+}));
 
+// ========================================================
+// Your budget-focused tables
+// (these are the ones from your brainstorm, cleaned up)
+// ========================================================
