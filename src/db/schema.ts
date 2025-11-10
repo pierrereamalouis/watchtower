@@ -1,4 +1,4 @@
-import { boolean, date, integer, pgEnum, pgTable, serial, smallint, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, date, integer, json, pgEnum, pgTable, serial, smallint, text, timestamp } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm/relations";
 
 export const userRoleEnum = pgEnum("user_role", ["admin", "user"]);
@@ -48,6 +48,7 @@ export const usersRelations = relations(users, ({ many }) => ({
 export const bankAccounts = pgTable("bank_accounts", {
   id: serial("id").primaryKey(),
   householdId: integer("household_id").notNull().references(() => households.id, { onDelete: "cascade" }),
+  userId: integer("user_id").references(() => users.id, { onDelete: "set null" }),
   name: text("name").notNull(),
   institution: text("institution"),
   visibility: accountVisibility("visibility").notNull().default("personal"),
@@ -85,7 +86,8 @@ export const transactions = pgTable("transactions", {
   id: serial("id").primaryKey(),
   accountId: integer("account_id").notNull().references(() => bankAccounts.id, { onDelete: "cascade" }),
   categoryId: integer("category_id").references(() => categories.id, { onDelete: "set null" }),
-  householdId: integer("household_id").notNull().references(() => households.id, { onDelete: "cascade" }),
+  householdId: integer("household_id").references(() => households.id, { onDelete: "set null" }),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   amountCents: integer("amount_cents").notNull(), // Positive for income, negative for expenses
   status: expeseStatus("status").notNull().default("unpaid"),
   type: expenseType("type").notNull().default("occurred"),
@@ -106,3 +108,52 @@ export const transactionLabels = pgTable("transaction_labels", {
 // Your budget-focused tables
 // (these are the ones from your brainstorm, cleaned up)
 // ========================================================
+export const budgets = pgTable("budgets", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  householdId: integer("household_id").references(() => households.id, { onDelete: "set null" }),
+  name: text("name").notNull(),
+  payCadence: payCadence("pay_cadence").notNull().default("bi_weekly"),
+  incomeCents: integer("income_cents").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (t) => ({
+  byUser: { columns: [t.userId] },
+}));
+
+export const budgetCategories = pgTable("budget_categories", {
+  id: serial("id").primaryKey(),
+  budgetId: integer("budget_id").notNull().references(() => budgets.id, { onDelete: "cascade" }),
+  categoryId: integer("category_id").notNull().references(() => categories.id, { onDelete: "cascade" }),
+  allocatedCents: integer("allocated_cents").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (t) => ({
+  uniqPerBudget: { columns: [t.budgetId, t.categoryId], unique: true },
+}));
+
+export const budgetSnapshots = pgTable("budget_snapshots", {
+  id: serial("id").primaryKey(),
+  budgetId: integer("budget_id").notNull().references(() => budgets.id, { onDelete: "cascade" }),
+  snapshotDate: date("snapshot_date").notNull(),
+  totalIncomeCents: integer("total_income_cents").notNull(),
+  totalExpensesCents: integer("total_expenses_cents").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const budgetTemplates = pgTable("budget_templates", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  template: json("template").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const budgetPaychecks = pgTable("budget_paychecks", {
+  id: serial("id").primaryKey(),
+  budgetId: integer("budget_id").notNull().references(() => budgets.id, { onDelete: "cascade" }),
+  occurrenceDate: date("occurrence_date").notNull(), // paycheck '1'  or paycheck '2' of the month, etc.
+  amountCents: integer("amount_cents").notNull(),
+  payDate: date("pay_date").notNull(),
+  lastOccurrenceDate: date("last_occurrence_date"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (t) => ({
+  byBudget: { columns: [t.budgetId] },
+}));
