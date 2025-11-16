@@ -222,7 +222,7 @@ export const payPeriods = pgTable("pay_periods", {
 // 12-week year monitoring
 // ========================================================
 
-export const twelveWeeksCycles = pgTable("twelve_weeks_cycles", {
+export const twelveWeekCycles = pgTable("twelve_weeks_cycles", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   householdId: integer("household_id").references(() => households.id, { onDelete: "set null" }),
@@ -236,7 +236,7 @@ export const twelveWeeksCycles = pgTable("twelve_weeks_cycles", {
 
 export const dailyExpenses = pgTable("daily_expenses", {
   id: serial("id").primaryKey(),
-  cycleId: integer("cycle_id").notNull().references(() => twelveWeeksCycles.id, { onDelete: "cascade" }),
+  cycleId: integer("cycle_id").notNull().references(() => twelveWeekCycles.id, { onDelete: "cascade" }),
   userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
   householdId: integer("household_id").references(() => households.id, { onDelete: "set null" }),
   expenseDate: date("expense_date").notNull(),
@@ -248,14 +248,3 @@ export const dailyExpenses = pgTable("daily_expenses", {
   createdOn: timestamp("created_on", { withTimezone: true }).defaultNow().notNull(),
   updatedOn: timestamp("updated_on", { withTimezone: true }),
 }, (t) => ({ byCycleAndDate: { columns: [t.cycleId, t.expenseDate] } }));
-
-// ========================================================
-// Useful inferred types
-// ========================================================
-export type User = typeof users.$inferSelect;
-export type Household = typeof households.$inferSelect;
-export type Budget = typeof budgets.$inferSelect;
-export type BudgetEntry = typeof budgetEntries.$inferSelect;
-export type Transaction = typeof transactions.$inferSelect;
-export type TwelveWeekCycle = typeof twelveWeeksCycles.$inferSelect;
-export type DailyExpense = typeof dailyExpenses.$inferSelect;
