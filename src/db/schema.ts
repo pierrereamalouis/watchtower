@@ -5,8 +5,8 @@ export const userRole = pgEnum("user_role", ["admin", "user"]);
 export const expenseStatus = pgEnum("expense_status", ["paid", "partial", "unpaid"]);
 export const accountVisibility = pgEnum("account_visibility", ["household", "personal"]);
 export const memberRole = pgEnum("member_role", ["owner", "admin", "member"]);
-export const payCadence = pgEnum("pay_cadence", ["weekly", "bi_weekly", "monthly", "yearly"]);
-export const paycheckOccurrence = pgEnum("paycheck_occurrence", ["1", "2"]);
+export const payCadence = pgEnum("pay_cadence", ["weekly", "bi_weekly", "monthly"]);
+export const payPeriodIndex = pgEnum("pay_period_index", ["1", "2"]);
 export const expenseType = pgEnum("expense_type", ["anticipated", "occurred"]);
 
 // ========================================================
@@ -182,7 +182,7 @@ export const budgetEntries = pgTable("budget_entries", {
   paycheckId: integer("paycheck_id").notNull().references(() => budgetPaychecks.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   amountCents: integer("amount_cents").notNull(),
-  paycheckOccurrence: paycheckOccurrence("paycheck_occurrence").notNull(),
+  payPeriodIndex: payPeriodIndex("pay_period_index").notNull(),
   transferId: integer("transfer_id").references(() => budgetTransfers.id, { onDelete: "set null" }),
   createdOn: timestamp("created_on", { withTimezone: true }).defaultNow().notNull(),
   updatedOn: timestamp("updated_on", { withTimezone: true }),
