@@ -29,5 +29,17 @@ export function createBudgetRepository(db: typeof dbClient) {
 
       return rows;
     },
+
+    async listByUserId(userId: number): Promise<Budget[]> {
+      const rows = await db
+        .select()
+        .from(budgets)
+        .where(eq(budgets.userId, userId))
+        .orderBy(
+          budgets.createdOn,
+        );
+
+      return rows;
+    },
   };
 }
