@@ -12,7 +12,7 @@ export interface BudgetEntryWithActuals {
 
 export interface BudgetWithEntries {
   budget: Budget;
-  entries: BudgetEntryWithActuals[];
+  entries: BudgetEntry[];
 }
 
 export interface BudgetSummary {
@@ -86,12 +86,12 @@ export interface ReorderBudgetEntriesInput {
 }
 
 // --- REPOSITORIES  INTERFACES ---
-export interface BudgetingRepository {
+export interface BudgetRepository {
   // Fetch a full budget with all entries + computed actuals
-  findBudgetWithEntries(userId: number, budgetId: number): Promise<BudgetWithEntries | null>;
+  findBudgetWithEntries(budgetId: number): Promise<BudgetWithEntries | null>;
 
   // List budget summaries for a user
-  listBudgetSummariesByUserId(userId: number): Promise<BudgetSummary[]>;
+  // listBudgetSummariesByUserId(userId: number): Promise<BudgetSummary[]>;
 
   // Create a new budget with entries
   createBudgetWithEntries(data: CreateBudgetWithEntries): Promise<BudgetWithEntries>;
@@ -113,4 +113,13 @@ export interface BudgetingRepository {
 
   // List all entries for a budget (without actuals)
   listBudgetEntries(budgetId: number): Promise<BudgetEntry[]>;
+
+  // Find a budget by ID
+  findById(id: number): Promise<Budget | null>;
+
+  // List budgets by household ID
+  listByHouseholdId(householdId: number): Promise<Budget[]>;
+
+  // List budgets by user ID
+  listByUserId(userId: number): Promise<Budget[]>;
 }

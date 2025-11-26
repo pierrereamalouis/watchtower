@@ -1,4 +1,5 @@
 import { ExpenseStatus, ExpenseType } from "@enums";
+import { Transaction } from "@lib/types/db.ts";
 /**
  * Transaction creation at the domain level.
  * (“API shape”: db type will likely match closely.)
@@ -39,4 +40,12 @@ export interface TransactionRepository {
   listTransactionsByDateRange(userId: number, startDate: Date, endDate: Date): Promise<TransactionByDateRange>;
 
   listTransactionsForBudget(userId: number, budgetId: number): Promise<TransactionByDateRange>;
+
+  createTransaction(input: CreateTransactionInput): Promise<Transaction>;
+
+  updateTransaction(transactionId: number, input: Partial<CreateTransactionInput>): Promise<Transaction>;
+
+  deleteTransaction(transactionId: number): Promise<void>;
+
+  assignTransactionToBudgetEntry(input: AssignTransactionToBudgetEntryInput): Promise<Transaction>;
 }
