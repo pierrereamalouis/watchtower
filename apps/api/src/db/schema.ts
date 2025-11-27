@@ -1,4 +1,17 @@
-import { boolean, date, integer, json, pgEnum, pgTable, serial, smallint, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  date,
+  index,
+  integer,
+  json,
+  pgEnum,
+  pgTable,
+  serial,
+  smallint,
+  text,
+  timestamp,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm/relations";
 
 export const userRole = pgEnum("user_role", ["admin", "user"]);
@@ -66,9 +79,9 @@ export const categories = pgTable("categories", {
   isShared: boolean("is_shared").notNull().default(false),
   createdOn: timestamp("created_on", { withTimezone: true }).defaultNow().notNull(),
   updatedOn: timestamp("updated_on", { withTimezone: true }),
-}, (t) => ({
-  uniqPerUserId: { columns: [t.userId, t.name], unique: true },
-}));
+});
+
+export const categoriesIndex = uniqueIndex("categories_userid_name_idx").on(categories.userId, categories.name);
 
 export const labels = pgTable("labels", {
   id: serial("id").primaryKey(),
@@ -80,9 +93,9 @@ export const labels = pgTable("labels", {
   }),
   createdOn: timestamp("created_on", { withTimezone: true }).defaultNow().notNull(),
   updatedOn: timestamp("updated_on", { withTimezone: true }),
-}, (t) => ({
-  uniqPerUserId: { columns: [t.userId, t.name], unique: true },
-}));
+});
+
+export const labelsUniqPerUserId = uniqueIndex("labels_userid_name_idx").on(labels.userId, labels.name);
 
 // ========================================================
 // Transactions (general, not just budget view)
@@ -122,9 +135,9 @@ export const budgets = pgTable("budgets", {
   incomeCents: integer("income_cents").notNull(),
   createdOn: timestamp("created_on", { withTimezone: true }).defaultNow().notNull(),
   updatedOn: timestamp("updated_on", { withTimezone: true }),
-}, (t) => ({
-  byUser: { columns: [t.userId] },
-}));
+});
+
+export const budgetsByUser = index("budgets_by_user_idx").on(budgets.userId);
 
 export const budgetCategories = pgTable("budget_categories", {
   id: serial("id").primaryKey(),
@@ -133,9 +146,12 @@ export const budgetCategories = pgTable("budget_categories", {
   allocatedCents: integer("allocated_cents").notNull(),
   createdOn: timestamp("created_on", { withTimezone: true }).defaultNow().notNull(),
   updatedOn: timestamp("updated_on", { withTimezone: true }),
-}, (t) => ({
-  uniqPerBudget: { columns: [t.budgetId, t.categoryId], unique: true },
-}));
+});
+
+export const budgetCategoriesUniqPerBudget = uniqueIndex("budget_categories_budgetid_categoryid_idx").on(
+  budgetCategories.budgetId,
+  budgetCategories.categoryId,
+);
 
 export const budgetSnapshots = pgTable("budget_snapshots", {
   id: serial("id").primaryKey(),
@@ -163,7 +179,9 @@ export const budgetPaychecks = pgTable("budget_paychecks", {
   lastOccurrenceDate: date("last_occurrence_date"),
   createdOn: timestamp("created_on", { withTimezone: true }).defaultNow().notNull(),
   updatedOn: timestamp("updated_on", { withTimezone: true }),
-}, (t) => ({ byBudget: { columns: [t.budgetId] } }));
+});
+
+export const budgetPaychecksByBudget = index("budget_paychecks_by_budget_idx").on(budgetPaychecks.budgetId);
 
 export const budgetTransfers = pgTable("budget_transfers", {
   id: serial("id").primaryKey(),
@@ -174,7 +192,9 @@ export const budgetTransfers = pgTable("budget_transfers", {
   toAccountId: integer("to_account_id").notNull().references(() => bankAccounts.id, { onDelete: "cascade" }),
   createdOn: timestamp("created_on", { withTimezone: true }).defaultNow().notNull(),
   updatedOn: timestamp("updated_on", { withTimezone: true }),
-}, (t) => ({ byBudget: { columns: [t.budgetId] } }));
+});
+
+export const budgetTransfersByBudget = index("budget_transfers_by_budget_idx").on(budgetTransfers.budgetId);
 
 export const budgetEntries = pgTable("budget_entries", {
   id: serial("id").primaryKey(),
@@ -216,7 +236,13 @@ export const payPeriods = pgTable("pay_periods", {
   actualAmountCents: integer("actual_amount_cents"),
   createdOn: timestamp("created_on", { withTimezone: true }).defaultNow().notNull(),
   updatedOn: timestamp("updated_on", { withTimezone: true }),
-}, (t) => ({ bySchedule: { columns: [t.scheduleId, t.startDate, t.endDate], unique: true } }));
+});
+
+export const payPeriodsByScheduleStartEnd = uniqueIndex("pay_periods_schedule_start_end_idx").on(
+  payPeriods.scheduleId,
+  payPeriods.startDate,
+  payPeriods.endDate,
+);
 
 // ========================================================
 // 12-week year monitoring
@@ -247,4 +273,9 @@ export const dailyExpenses = pgTable("daily_expenses", {
   expenseStatus: expenseStatus("expense_status").notNull().default("unpaid"),
   createdOn: timestamp("created_on", { withTimezone: true }).defaultNow().notNull(),
   updatedOn: timestamp("updated_on", { withTimezone: true }),
-}, (t) => ({ byCycleAndDate: { columns: [t.cycleId, t.expenseDate] } }));
+});
+
+export const dailyExpensesByCycleAndDate = index("daily_expenses_cycle_date_idx").on(
+  dailyExpenses.cycleId,
+  dailyExpenses.expenseDate,
+);

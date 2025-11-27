@@ -1,5 +1,47 @@
-import { Budget, BudgetEntry } from "@/lib/types/db.ts";
+import { Budget, BudgetEntry, BudgetEntryInsert, BudgetInsert } from "@/lib/types/db.ts";
 import { PayCadence, PayPeriodIndex } from "@enums";
+import { z } from "zod";
+import { budgetEntries, budgetPaychecks, budgets } from "@/db/schema.ts";
+import { createInsertSchema } from "drizzle-zod";
+
+export const BudgetInsertSchema = createInsertSchema(budgets);
+export const BudgetPaycheckInsertSchema = createInsertSchema(budgetPaychecks);
+export const BudgetEntryInsertSchema = createInsertSchema(budgetEntries);
+
+const BaseCreateBudgetEntryScheam = BudgetEntryInsertSchema.omit({
+  id: true,
+  budgetId: true,
+  paycheckId: true,
+  createdOn: true,
+  updatedOn: true,
+});
+
+// Extend with how the UI links this entry to a paycheck
+export const CreateBudgetEntrySchema = BaseCreateBudgetEntryScheam.extend({
+  // e.g. 0 = first paycheck in the period, 1 = second paycheck…
+  paycheckIndex: z.number().int().nonnegative(),
+});
+
+export type CreateBudgetEntry = z.infer<typeof CreateBudgetEntrySchema>;
+
+const BaseCreateBudgetSchema = BudgetInsertSchema.omit({
+  id: true,
+  createdOn: true,
+  updatedOn: true,
+});
+
+export const CreateBudgetWithEntriesSchema = BaseCreateBudgetSchema.extend({
+  householdId: z.number().int().optional(),
+  payCadence: z.enum(PayCadence),
+  payPeriodIndex: z.enum(PayPeriodIndex),
+  entries: z.array(CreateBudgetEntrySchema).min(1),
+});
+
+/**
+ * Create a new budget *and* its entries in one go.
+ * Think: “build my bi-weekly template and save it”.
+ */
+export type CreateBudgetWithEntries = z.infer<typeof CreateBudgetWithEntriesSchema>;
 
 /**
  * A budget entry plus its “actuals” (sum of linked transactions).
@@ -20,25 +62,6 @@ export interface BudgetSummary {
   totalPlanned: number;
   totalActual: number;
   remaining: number;
-}
-
-/**
- * Create a new budget *and* its entries in one go.
- * Think: “build my bi-weekly template and save it”.
- */
-
-export interface CreateBudgetWithEntries {
-  householdId?: number;
-  userId: number;
-  label: string; // e.g. "Jan 2026 - Paycheck 1"
-  name: string;
-  incomeCents: number;
-  payCadence: PayCadence;
-  payPeriodIndex: PayPeriodIndex;
-  entries: Array<{
-    categoryId: number;
-    plannedAmount: number;
-  }>;
 }
 
 /**

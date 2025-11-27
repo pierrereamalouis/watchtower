@@ -1,7 +1,7 @@
 import type { db as dbClient } from "@/db/client.ts";
 import { budgetEntries, budgets, transactions } from "@/db/schema.ts";
 import type { Budget, BudgetEntry, BudgetInsert } from "@/lib/types/db.ts";
-import { BudgetRepository, BudgetWithEntries } from "@/domain/budgeting.ts";
+import { BudgetRepository, BudgetWithEntries, CreateBudgetWithEntries } from "@/domain/budgeting.ts";
 
 import { and, eq } from "drizzle-orm";
 
@@ -40,8 +40,23 @@ export function createBudgetRepository(db: typeof dbClient): BudgetRepository {
     //   return [];
     // },
 
-    async createBudgetWithEntries(data) {
-      // Implementation omitted for brevity
+    async createBudgetWithEntries(data: CreateBudgetWithEntries): Promise<BudgetWithEntries> {
+      const budgetId = await db.insert(budgets).values({
+        name: data.name,
+        userId: data.userId,
+        incomeCents: data.incomeCents,
+        payCadence: data.payCadence,
+        payPeriodIndex: data.payPeriodIndex,
+        label: data.label,
+      }).returning({ insertedId: budgets.id });
+  
+      await db.insert(budgetEntries).values(data.entries);
+
+      const insertedBudget = await db
+        .select()
+        .from(budgets)
+        .where(eq(budgets.id, budgetId.insertedId))
+        .limit(1);
       return null;
     },
 

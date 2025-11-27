@@ -25,6 +25,7 @@
     "@hono/zod-validator": "jsr:@hono/zod-validator@^0.7.4",
     "drizzle-orm": "npm:drizzle-orm",
     "drizzle-kit": "npm:drizzle-kit",
+    "drizzle-zod": "npm:drizzle-zod",
     "zod": "npm:zod",
     "@std": "jsr:@std",
     "pg": "npm:pg@^8.16.3",

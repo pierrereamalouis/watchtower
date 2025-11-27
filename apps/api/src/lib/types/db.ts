@@ -2,6 +2,7 @@
 
 import type {
   budgetEntries,
+  budgetPaychecks,
   budgets,
   dailyExpenses,
   households,
@@ -15,6 +16,9 @@ export type Household = typeof households.$inferSelect;
 
 export type Budget = typeof budgets.$inferSelect;
 export type BudgetInsert = typeof budgets.$inferInsert;
+
+export type BudgetPaycheck = typeof budgetPaychecks.$inferSelect;
+export type BudgetPaycheckInsert = typeof budgetPaychecks.$inferInsert;
 
 export type BudgetEntry = typeof budgetEntries.$inferSelect;
 export type BudgetEntryInsert = typeof budgetEntries.$inferInsert;
